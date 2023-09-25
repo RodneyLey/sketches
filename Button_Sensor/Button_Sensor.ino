@@ -22,21 +22,31 @@ void setup() {
 
 }
 
+unsigned long lastButtonPressTime = 0; // Variable to store the time of the last button press
+
 // the loop routine runs over and over again forever:
 void loop() {
   // read the input pin:
   int buttonState = digitalRead(2);
+  unsigned long currentTime = millis(); // Get the current time
   // introduce the if else statement for the two LEDs
 if (buttonState == LOW) {
     digitalWrite(3, HIGH);
     digitalWrite(4, LOW);
     Serial.println(buttonState);
+    lastButtonPressTime = currentTime; // Update the last button press time
     delay(1000);  // delay in between reads for stability
 
   }
   else {
+    // Check if the LEDs should be turned off due to a timeout
+    if (currentTime - lastButtonPressTime >= 10000) { // 10 seconds timeout
+      digitalWrite(3, LOW);
+      digitalWrite(4, LOW);
+    } else {
     digitalWrite(3, LOW);   // Turn off the LED when the button is not pressed
     digitalWrite(4, HIGH);
+    }
     Serial.println(buttonState);
     delay(1000);  // delay in between reads for stability
    }
